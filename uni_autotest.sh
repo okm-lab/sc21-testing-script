@@ -21,7 +21,8 @@ function run_test() {
   input=$(sed 's/\\n/\n/g' <<< $1)
   output=$(sed 's/\\n/\n/g' <<< $2)
   executable_name=$3
-  result=$(./$executable_name <<< "${input}")
+  ./$executable_name <<< "${input}" > test_out
+  result=$(cat test_out)
   printf "${LCYAN}TEST ${test_number}${ENDCOLOR}: "
 
   clean_result=$(sed 's/\n//g' <<< $result)
@@ -97,19 +98,21 @@ else
     exit 1
   fi
 fi
+
 printf "Checking using ${LBLUE}cppcheck${ENDCOLOR}...\n"
-cppcheck $program_name
+cppcheck --enable=all --suppress=missingIncludeSystem $program_name
 
 printf "${LBLUE}Copying${ENDCOLOR} ${LBLUE}cpplint${ENDCOLOR}...\n"
 cp ../materials/linters/* .
 
 printf "${LBLUE}Linting${ENDCOLOR} ${GREEN}${program_name}${ENDCOLOR}...\n"
-python cpplint.py maxmin.c
+python cpplint.py $program_name
 
 
 
 printf "\n\n\n"
 touch leaks_out
+touch test_out
 
 run_all_tests_from_file "$executable_name" "$test_file_path"
 
@@ -119,6 +122,11 @@ if [[ -f "$executable_name" ]]; then
 fi
 
 if [[ -f "leaks_out" ]]; then
-  printf "Removing leaks file..."
+  printf "Removing leaks file...\n"
   rm leaks_out
+fi
+
+if [[ -f "test_out" ]]; then
+  printf "Removing test_out file..."
+  rm test_out
 fi
