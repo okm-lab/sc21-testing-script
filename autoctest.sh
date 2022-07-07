@@ -114,7 +114,11 @@ printf "\n\n\n"
 touch leaks_out
 touch test_out
 
-run_all_tests_from_file "$executable_name" "$test_file_path"
+if [[ -f "$test_file_path" ]]; then
+  run_all_tests_from_file "$executable_name" "$test_file_path"
+else
+  printf "Test file not found!\n"
+fi
 
 if [[ -f "$executable_name" ]]; then
   printf "Removing executable file...\n"
