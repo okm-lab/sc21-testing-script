@@ -76,6 +76,12 @@ function run_all_tests_from_file() {
 }
 
 program_name="$1"
+
+if [[ ! -f "$program_name" ]]; then
+  printf "${RED}File not found error!${ENDCOLOR}\n\n"
+  exit 1
+fi
+
 file_name=$(awk -F '\\.c' '{print $1}' <<< "$program_name")
 if [[ ! -f "$2" ]]; then
   test_file_path="${file_name}.test"
