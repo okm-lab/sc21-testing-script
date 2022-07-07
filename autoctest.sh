@@ -131,6 +131,6 @@ if [[ -f "leaks_out" ]]; then
 fi
 
 if [[ -f "test_out" ]]; then
-  printf "Removing test_out file..."
+  printf "Removing test_out file...\n"
   rm test_out
 fi
